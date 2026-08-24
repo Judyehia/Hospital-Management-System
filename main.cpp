@@ -193,9 +193,18 @@ public:
 
     void addEmergency(
         int patientId
-    );
+    ){
+        emergencyQueue.push(patientId);
+    }
 
-    int handleEmergency();
+    int handleEmergency(){
+        if (emergencyQueue.empty()){
+            return -1;
+        }
+        int patientId = emergencyQueue.front();
+        emergencyQueue.pop();
+        return patientId;
+    }
 
     void bookAppointment(
         int doctorId,
@@ -321,7 +330,9 @@ public:
     void addPriorityEmergency(
         int patientId,
         int severity
-    );
+    ){
+        priorityEmergencyQueue.push(EmergencyCase(patientId, severity));
+    }
 
 
     // =====================================================
@@ -329,7 +340,14 @@ public:
     // Handle Priority Emergency
     // ===================================================== //
 
-    int handlePriorityEmergency();
+    int handlePriorityEmergency(){
+        if (priorityEmergencyQueue.empty()){
+            return -1;
+        }
+        int patientId = priorityEmergencyQueue.top().getPatientId();
+        priorityEmergencyQueue.pop();
+        return patientId;
+    }
 
 
     // =====================================================
