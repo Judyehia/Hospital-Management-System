@@ -61,44 +61,162 @@ private:
 
 public:
     // Constructor
-    Patient(int pid, string n, int a, string c);
-
+    Patient(int pid, string n, int a, string c)
+    {
+        id=pid;
+        name=n;
+        age=a;
+        contact=c;
+        isAdmitted=false;
+        bill=0;
+        roomType;
+    }
     // ========== ORIGINAL FEATURES ========== //
 
-    void admitPatient(RoomType type);
-    void dischargePatient();
+    void admitPatient(RoomType type)
+    {
+      if(isAdmitted)
+     { cout <<"patient is Admitted\n";
+      return;
+     }
+     isAdmitted=true;
+     roomType=type;
+    switch (type)
+    {
+    case GENERAL_WARD:
+      addBill(500);
+      break;
+    case ICU:
+      addBill(3000);
+      break;
+    case PRIVATE_ROOM:
+      addBill(1500);
+      break;
+    case SEMI_PRIVATE:
+      addBill(1000);
+      break;
+    }
+       cout << "Patient admitted successfully\n";
+    }
+    void dischargePatient()
+    {
+        if(!isAdmitted)
+        {
+             cout << "patient is currently not admitted\n";
+             return;
+        }
+    isAdmitted=false;
+    medicalHistory.push("patient discharged from hospital");
+    }
+    void addMedicalRecord(string record)
+    {medicalHistory.push(record);}
 
-    void addMedicalRecord(string record);
+    void requestTest(string testName)
+    {
+        testQueue.push(testName);
+        medicalHistory.push("Test requested:"+testName);
+    }
+    string performTest()
+    { if(testQueue.empty())
+        return "No tests pending" ;
+      else 
+      { string testName=testQueue.front();
+        testQueue.pop();
+        medicalHistory.push("Test performed:"+testName);
+        addBill(300);
+        return testName;
+      }
+    }
 
-    void requestTest(string testName);
-    string performTest();
+    void displayHistory()
+    { stack<string> temp=medicalHistory;
+        if (medicalHistory.empty())
+        {
+            cout<< "no history is found";
+        }
+        while (!temp.empty())
+        {
+         cout<<temp.top()<<endl;
+         temp.pop();
+        }
+    }
 
-    void displayHistory();
-
-    int getId();
-    string getName();
-
-    bool getAdmissionStatus();
-
+    int getId()
+    { return id;}
+    string getName()
+    {
+      return name;
+    }
+    bool getAdmissionStatus()
+    { return isAdmitted;}
+    
 
     // ========== NEW FEATURES ========== //
 
     // Medical Tests
-    void displayPendingTests();
+    void displayPendingTests()
+    {
+         if(testQueue.empty())
+        {
+            cout<<"No tests" <<endl;
+            return;
+        }
+        queue<string> copy=testQueue;
+        while(!copy.empty())
+        {
+       cout << " - " << copy.front() <<endl;
+       copy.pop();
+        }
+    
+    }
 
     // Prescriptions
-    void addPrescription(string medicine);
-    void displayPrescriptions();
+    void addPrescription(string medicine)
+    {
+        prescriptions.push_back(medicine);
+        medicalHistory.push("Prescription added: " + medicine);
+        addBill(100);
+    }
+    void displayPrescriptions()
+    { if(prescriptions.empty())
+        { cout<< "No prescriptions";
+         return;}
+     for (int i = 0; i < prescriptions.size(); i++) 
+         cout << "- " << prescriptions[i] << endl;
+    }
 
     // Billing
-    void addBill(double amount);
-    double getBill();
-    void displayBill();
+    void addBill(double amount)
+    {
+        bill=bill+amount;
 
+    }
+    double getBill()
+     {return bill; }
+
+    void displayBill()
+    {
+    cout << "==============================" << endl;
+    cout << "        PATIENT BILL          " << endl;
+    cout << "==============================" << endl;
+    cout << "Patient ID: " << id << endl;
+    cout << "Patient Name: " << name << endl;
+    cout << "Total Bill: $" << bill << endl;
+    cout << "==============================" << endl;
+    }
     // Additional Getters
-    int getAge();
-    string getContact();
-    RoomType getRoomType();
+    int getAge()
+    {
+        return age;
+    }
+    string getContact()
+    {
+     return contact;
+    }
+    RoomType getRoomType()
+    {
+      return roomType;
+    }
 };
 
 
